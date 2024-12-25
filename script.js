@@ -50,7 +50,7 @@ const requestOptions = {
         // Extract and displsay bot's response text
 
         // NOTE: Data anny lag gaya hay ab only display karana hay obj ki form may data a raha hay 
-        const apiResponesText = data.candidates[0].content.parts[0].text.trim();
+        const apiResponesText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g,"$1").trim();
         // Data dandidates[0] ki index 0 pay a raha tha phir content may, phir parts[0] index pay, phir text finally nazar a raha tha aus ko trim kar dia hay
 
         // .trim start aur end of the string say whitespace khatam kar raha hay
@@ -58,6 +58,15 @@ const requestOptions = {
         messageElement.innerHTML = apiResponesText;
     } catch (error) {
         console.log(error);
+        messageElement.innerHTML = error.message;
+        messageElement.style.color = "red";
+    }finally{
+        // Remove thinking indicator
+        incomingMassegeDiv.classList.remove("thinking");
+         // Making scrolling smooth and from top
+    chatBody.scrollTo({
+        top: chatBody.scrollHeight,
+        behavior:"smooth"})
     }
 }
 
@@ -77,6 +86,11 @@ const handleOutgoingMessage = (e)=>{
     
     outgoingMassegeDiv.querySelector(".message-text").textContent = userData.message;
     chatBody.appendChild(outgoingMassegeDiv);
+
+    // Making scrolling smooth and from top
+    chatBody.scrollTo({
+        top: chatBody.scrollHeight,
+        behavior:"smooth"})
     
     // Simulate bot response with thinking indicator after a delay
     setTimeout(()=>{
@@ -95,6 +109,12 @@ const handleOutgoingMessage = (e)=>{
     const incomingMassegeDiv = createMessageElement(messageContent,"bot-message","thinking");
     
     chatBody.appendChild(incomingMassegeDiv);
+
+     // Making scrolling smooth and from top
+     chatBody.scrollTo({
+        top: chatBody.scrollHeight,
+        behavior:"smooth"})
+
     // calling the Gemini API function
     generateBotResponse(incomingMassegeDiv);
     },600)
